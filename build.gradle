@@ -1,0 +1,61 @@
+buildscript {
+    ext {
+        tomCatVersion = '8.5.16'
+    }
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+
+    }
+        dependencies {
+            classpath 'com.bmuschko:gradle-tomcat-plugin:2.4.2'
+        }
+    }
+
+
+group 'tabiul'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.tomcat'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomCatVersion}",
+        "org.apache.tomcat.embed:tomcat-embed-logging-juli:8.5.2",
+        "org.apache.tomcat.embed:tomcat-embed-jasper:${tomCatVersion}"
+    compile "org.apache.tomcat.embed:tomcat-embed-core:${tomCatVersion}"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+mainClassName = 'Main'
+
+distributions {
+    main {
+        contents {
+            from('src/main/webapp') {
+                into 'src/main/webapp'
+            }
+            from('build/classes') {
+                into 'build/classes'
+            }
+        }
+    }
+}
+tomcatRun.additionalRuntimeResources = [new File('src/main/webapp')]
+tomcat {
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+}
+//tomcat {
+//    additionalRuntimeResources = ['src/main/webapp']
+//}
