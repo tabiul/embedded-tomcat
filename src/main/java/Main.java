@@ -1,4 +1,3 @@
-import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
@@ -8,11 +7,12 @@ import org.apache.catalina.webresources.StandardRoot;
 
 import javax.servlet.ServletException;
 import java.io.File;
+import java.net.MalformedURLException;
 
 public class Main {
 
 
-    public static void main(String[] args) throws LifecycleException, ServletException {
+    public static void main(String[] args) throws LifecycleException, ServletException, MalformedURLException {
         String webappDirLocation = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
 
@@ -35,6 +35,8 @@ public class Main {
         resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
             additionWebInfClasses.getAbsolutePath(), "/"));
         ctx.setResources(resources);
+        File configFile = new File("src/main/webapp/WEB-INF/web.xml");
+        ctx.setConfigFile(configFile.toURI().toURL());
 
         tomcat.start();
         tomcat.getServer().await();
